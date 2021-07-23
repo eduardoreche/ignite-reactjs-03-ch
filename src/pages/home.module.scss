@@ -1,1 +1,17 @@
-// TODO
+.postsContainer {
+  height: 5rem;
+  
+  max-width: 1120px;
+  height: 5rem;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  display: flex;
+  flex-direction: column;
+
+  article {
+    display: flex;
+    flex-direction: column;
+    margin: 2rem 0 2rem 0;
+  }
+}

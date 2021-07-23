@@ -35,7 +35,20 @@ export default function Home({ posts }: HomeProps) {
       <Head>
         <title>Home | ig.blog</title>
       </Head>
-      <h1>Test</h1>
+      <main className={styles.postsContainer}>
+        {posts.map((post) => (
+          <article key={post.uid}>
+            <h1>{post.data.title}</h1>
+            <p>{post.data.subtitle}</p>
+            <div>
+              <img src="/images/calendar.png" />
+              <time>{post.first_publication_date}</time>
+              <img src="/images/user.png" />
+              <span>{post.data.author}</span>
+            </div>
+          </article>
+        ))}
+      </main>
     </>
   );
 }
@@ -44,7 +57,7 @@ export const getStaticProps: GetStaticProps = async () => {
   const prismic = getPrismicClient();
 
   const response = await prismic.query(
-    [Prismic.predicates.at("document.type", "post")],
+    [Prismic.predicates.at("document.type", "posts")],
     {
       fetch: ["post.title", "post.content"],
       pageSize: 20,
