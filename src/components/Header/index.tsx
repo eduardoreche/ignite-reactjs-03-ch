@@ -1,11 +1,11 @@
-import styles from './header.module.scss';
+import styles from "./header.module.scss";
 
-export default function Header() {
+const Header = () => {
   return (
     <header className={styles.headerContainer}>
-      <div>
-        <img src="/images/logo.svg" alt="ig.blog" />
-      </div>
+      <img src="/images/logo.svg" alt="ig.blog" />
     </header>
   );
-}
+};
+
+export default Header;

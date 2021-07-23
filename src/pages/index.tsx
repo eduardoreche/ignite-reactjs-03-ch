@@ -1,11 +1,13 @@
-import { GetStaticProps } from 'next';
-import Prismic from '@prismicio/client';
-import { RichText } from 'prismic-dom';
+import { GetStaticProps } from "next";
+import Head from "next/head";
 
-import { getPrismicClient } from '../services/prismic';
+import Prismic from "@prismicio/client";
+import { RichText } from "prismic-dom";
 
-import commonStyles from '../styles/common.module.scss';
-import styles from './home.module.scss';
+import { getPrismicClient } from "../services/prismic";
+
+import commonStyles from "../styles/common.module.scss";
+import styles from "./home.module.scss";
 
 interface Post {
   uid?: string;
@@ -28,21 +30,28 @@ interface HomeProps {
 }
 
 export default function Home({ posts }: HomeProps) {
-  return <h1>Hi</h1>;
+  return (
+    <>
+      <Head>
+        <title>Home | ig.blog</title>
+      </Head>
+      <h1>Test</h1>
+    </>
+  );
 }
 
 export const getStaticProps: GetStaticProps = async () => {
   const prismic = getPrismicClient();
 
   const response = await prismic.query(
-    [Prismic.predicates.at('document.type', 'post')],
+    [Prismic.predicates.at("document.type", "post")],
     {
-      fetch: ['post.title', 'post.content'],
+      fetch: ["post.title", "post.content"],
       pageSize: 20,
     }
   );
 
-  const posts = response.results.map(post => {
+  const posts = response.results.map((post) => {
     return {
       slug: post.uid,
       data: {
@@ -52,10 +61,10 @@ export const getStaticProps: GetStaticProps = async () => {
       },
       first_publication_date: new Date(
         post.first_publication_date
-      ).toLocaleDateString('en-US', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
+      ).toLocaleDateString("en-US", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
       }),
     };
   });
