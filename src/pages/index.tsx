@@ -72,7 +72,7 @@ export const getStaticProps: GetStaticProps = async () => {
     [Prismic.predicates.at("document.type", "posts")],
     {
       fetch: ["post.title", "post.content"],
-      pageSize: 20,
+      pageSize: 1,
     }
   );
 
@@ -97,6 +97,10 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       posts,
+      postsPagination: {
+        next_page: 2,
+        results: posts,
+      },
     },
   };
 };
