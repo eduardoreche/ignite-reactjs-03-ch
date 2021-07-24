@@ -1,16 +1,16 @@
 import { GetStaticProps } from "next";
 import Head from "next/head";
+import Link from "next/link";
 
 import Prismic from "@prismicio/client";
 import { RichText } from "prismic-dom";
 
 import { getPrismicClient } from "../services/prismic";
 
-import commonStyles from "../styles/common.module.scss";
 import styles from "./home.module.scss";
 
 interface Post {
-  uid?: string;
+  slug?: string;
   first_publication_date: string | null;
   data: {
     title: string;
@@ -37,17 +37,29 @@ export default function Home({ posts }: HomeProps) {
       </Head>
       <main className={styles.postsContainer}>
         {posts.map((post) => (
-          <article key={post.uid}>
-            <h1>{post.data.title}</h1>
-            <p>{post.data.subtitle}</p>
-            <div>
-              <img src="/images/calendar.png" />
-              <time>{post.first_publication_date}</time>
-              <img src="/images/user.png" />
-              <span>{post.data.author}</span>
-            </div>
-          </article>
+          <Link href={`/posts/${post.slug}`}>
+            <a key={post.slug}>
+              <h1>{post.data.title}</h1>
+              <p>{post.data.subtitle}</p>
+              <div>
+                <div>
+                  <img src="/images/calendar.png" />
+                  <time>{post.first_publication_date}</time>
+                </div>
+                <div>
+                  <img src="/images/user.png" />
+                  <span>{post.data.author}</span>
+                </div>
+              </div>
+            </a>
+          </Link>
         ))}
+
+        <div className={styles.bottom}>
+          <Link href="/posts/">
+            <a>Carregar mais posts</a>
+          </Link>
+        </div>
       </main>
     </>
   );
