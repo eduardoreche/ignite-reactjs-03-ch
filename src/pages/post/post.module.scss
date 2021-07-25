@@ -53,4 +53,26 @@
   .utterances-frame {
     width: 100%;
   }
+
+  aside {
+    a {
+      width: 100%;
+      background: #F8F8F8;
+      border-radius: 4px;
+      margin: 1rem;
+      height: 58px;
+      
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+
+      font-family: Inter;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 22px;
+      color: #000;
+    }
+  }
 }

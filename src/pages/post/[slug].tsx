@@ -1,6 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Prismic from "@prismicio/client";
 import { RichText } from "prismic-dom";
 import { ptBR } from "date-fns/locale";
@@ -28,10 +29,11 @@ interface Post {
 }
 
 interface PostProps {
+  preview: boolean;
   post: Post;
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post({ post, preview }: PostProps) {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -107,6 +109,14 @@ export default function Post({ post }: PostProps) {
             elem.appendChild(scriptElem);
           }}
         />
+
+        {preview && (
+          <aside>
+            <Link href="/api/exit-preview">
+              <a>Sair do modo Preview</a>
+            </Link>
+          </aside>
+        )}
       </main>
     </>
   );
@@ -131,14 +141,23 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({
+  params,
+  preview,
+  previewData,
+}) => {
   const prismic = getPrismicClient();
   const { slug } = params;
 
-  const response = await prismic.getByUID("posts", String(slug), {});
+  const response = await prismic.getByUID("posts", String(slug), {
+    ref: previewData?.ref ?? null,
+  });
+
+  console.log("PREVIEW", preview);
 
   return {
     props: {
+      preview: !!preview,
       post: {
         first_publication_date: response.first_publication_date,
         uid: response.uid,
