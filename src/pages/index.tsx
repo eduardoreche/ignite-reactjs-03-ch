@@ -1,16 +1,18 @@
+import { useState } from "react";
 import { GetStaticProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { format } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
 
 import Prismic from "@prismicio/client";
-import { RichText } from "prismic-dom";
 
 import { getPrismicClient } from "../services/prismic";
 
 import styles from "./home.module.scss";
 
 interface Post {
-  slug?: string;
+  uid?: string;
   first_publication_date: string | null;
   data: {
     title: string;
@@ -25,26 +27,67 @@ interface PostPagination {
 }
 
 interface HomeProps {
-  posts: Post[];
   postsPagination: PostPagination;
 }
 
-export default function Home({ posts }: HomeProps) {
+export default function Home({ postsPagination }: HomeProps) {
+  const [loadedPosts, setLoadedPosts] = useState<Post[]>(
+    postsPagination.results
+  );
+  const [nextPage, setNextPage] = useState<string>(postsPagination.next_page);
+
+  const loadMorePosts = () => {
+    if (nextPage) {
+      fetch(nextPage)
+        .then((response) => response.json())
+        .then((data) => {
+          const posts = data.results.map((post) => {
+            return {
+              slug: post.uid,
+              data: {
+                title: post.data.title,
+                subtitle: post.data.subtitle,
+                author: post.data.author,
+              },
+              first_publication_date: new Date(
+                post.first_publication_date
+              ).toLocaleDateString("en-US", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              }),
+            };
+          });
+
+          setNextPage(data.next_page);
+          setLoadedPosts([...loadedPosts, ...posts]);
+        });
+    }
+  };
+
   return (
     <>
       <Head>
-        <title>Home | ig.blog</title>
+        <title>Home | spacetraveling.</title>
       </Head>
       <main className={styles.postsContainer}>
-        {posts.map((post) => (
-          <Link href={`/posts/${post.slug}`}>
-            <a key={post.slug}>
+        {loadedPosts?.map((post) => (
+          <Link href={`/post/${post.uid}`} key={post.uid}>
+            <a>
               <h1>{post.data.title}</h1>
               <p>{post.data.subtitle}</p>
               <div>
                 <div>
                   <img src="/images/calendar.png" />
-                  <time>{post.first_publication_date}</time>
+                  <time>
+                    {format(
+                      new Date(post.first_publication_date),
+                      "dd MMM yyyy",
+                      {
+                        locale: ptBR,
+                      }
+                    )}
+                  </time>
                 </div>
                 <div>
                   <img src="/images/user.png" />
@@ -55,11 +98,11 @@ export default function Home({ posts }: HomeProps) {
           </Link>
         ))}
 
-        <div className={styles.bottom}>
-          <Link href="/posts/">
-            <a>Carregar mais posts</a>
-          </Link>
-        </div>
+        {nextPage && (
+          <div className={styles.bottom}>
+            <a onClick={loadMorePosts}>Carregar mais posts</a>
+          </div>
+        )}
       </main>
     </>
   );
@@ -73,33 +116,27 @@ export const getStaticProps: GetStaticProps = async () => {
     {
       fetch: ["post.title", "post.content"],
       pageSize: 1,
+      page: 1,
     }
   );
 
-  const posts = response.results.map((post) => {
+  const results = response.results.map((post) => {
     return {
-      slug: post.uid,
+      uid: post.uid,
       data: {
         title: post.data.title,
         subtitle: post.data.subtitle,
         author: post.data.author,
       },
-      first_publication_date: new Date(
-        post.first_publication_date
-      ).toLocaleDateString("en-US", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      }),
+      first_publication_date: post.first_publication_date,
     };
   });
 
   return {
     props: {
-      posts,
       postsPagination: {
-        next_page: 2,
-        results: posts,
+        results,
+        next_page: response.next_page,
       },
     },
   };
