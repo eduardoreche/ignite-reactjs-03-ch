@@ -1,1 +1,40 @@
-// TODO
+.postContainer {
+  height: 5rem;
+  
+  max-width: 1120px;
+  height: 5rem;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    font-weight: 700;
+    font-size: 1.75rem;
+    line-height: 2.5rem;
+    margin: 1.5rem 0 0.5rem 0;
+  }
+
+  div.postInfo {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--grey-200);
+
+    div {
+      display: flex;
+      line-height: 1rem;
+      gap: 0.5rem;
+    }
+  }
+
+  article {
+    font-weight: 400;
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+    margin: 1rem 0 1rem 0;
+    color: var(--grey-100)
+  }
+}

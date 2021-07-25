@@ -43,7 +43,7 @@ export default function Home({ postsPagination }: HomeProps) {
         .then((data) => {
           const posts = data.results.map((post) => {
             return {
-              slug: post.uid,
+              uid: post.uid,
               data: {
                 title: post.data.title,
                 subtitle: post.data.subtitle,
