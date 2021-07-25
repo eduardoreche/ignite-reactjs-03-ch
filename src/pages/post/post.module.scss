@@ -30,6 +30,15 @@
     }
   }
 
+  div.lastEdited {
+    width: 100%;
+    display: flex;
+    margin-top: 0.5rem;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--grey-200);
+  }
+
   article {
     font-weight: 400;
     font-size: 1.125rem;
@@ -39,19 +48,10 @@
 
   }
 
+
   hr {
     opacity: 0.1;
     border: 1px solid var(--grey-100);
-  }
-
-  div.utterances {
-    width: 100%;
-    max-width: 100% !important;
-    margin: 0 !important;
-  }
-
-  .utterances-frame {
-    width: 100%;
   }
 
   aside {
