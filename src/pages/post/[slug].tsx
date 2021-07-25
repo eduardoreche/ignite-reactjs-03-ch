@@ -1,6 +1,7 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Prismic from "@prismicio/client";
 import { RichText } from "prismic-dom";
 import { ptBR } from "date-fns/locale";
@@ -12,6 +13,7 @@ import styles from "./post.module.scss";
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     title: string;
     banner: {
@@ -28,10 +30,11 @@ interface Post {
 }
 
 interface PostProps {
+  preview: boolean;
   post: Post;
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post({ post, preview }: PostProps) {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -79,12 +82,70 @@ export default function Post({ post }: PostProps) {
           </div>
         </div>
 
+        <div className={styles.lastEdited}>
+          {post.last_publication_date && (
+            <span>
+              {format(
+                new Date(post.last_publication_date),
+                "'* editado em' dd MMM yyyy', às' HH:mm",
+                { locale: ptBR }
+              )}
+            </span>
+          )}
+        </div>
+
         {post.data.content.map((content) => (
           <article key={content.heading} className={styles.postContent}>
             <h2>{content.heading}</h2>
             <div>{content.body.map((body) => body.text)}</div>
           </article>
         ))}
+
+        <hr />
+
+        <section className={styles.navigationLinks}>
+          <Link href="/">
+            <a>
+              <h2>Title1</h2>
+              <label>Post anterior</label>
+            </a>
+          </Link>
+
+          <Link href="/">
+            <a>
+              <h2>Title2</h2>
+              <label>Próximo post</label>
+            </a>
+          </Link>
+        </section>
+
+        <section
+          ref={(elem) => {
+            if (!elem) {
+              return;
+            }
+            const scriptElem = document.createElement("script");
+            scriptElem.src = "https://utteranc.es/client.js";
+            scriptElem.async = true;
+            scriptElem.crossOrigin = "anonymous";
+            scriptElem.setAttribute(
+              "repo",
+              "eduardoreche/ignite-reactjs-03-ch"
+            );
+            scriptElem.setAttribute("issue-term", "pathname");
+            scriptElem.setAttribute("label", "comments");
+            scriptElem.setAttribute("theme", "github-dark");
+            elem.appendChild(scriptElem);
+          }}
+        />
+
+        {preview && (
+          <aside>
+            <Link href="/api/exit-preview">
+              <a>Sair do modo Preview</a>
+            </Link>
+          </aside>
+        )}
       </main>
     </>
   );
@@ -109,16 +170,24 @@ export const getStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({
+  params,
+  preview,
+  previewData,
+}) => {
   const prismic = getPrismicClient();
   const { slug } = params;
 
-  const response = await prismic.getByUID("posts", String(slug), {});
+  const response = await prismic.getByUID("posts", String(slug), {
+    ref: previewData?.ref ?? null,
+  });
 
   return {
     props: {
+      preview: !!preview,
       post: {
         first_publication_date: response.first_publication_date,
+        last_publication_date: response.last_publication_date,
         uid: response.uid,
         data: {
           title: response.data.title,
