@@ -103,6 +103,22 @@ export default function Post({ post, preview }: PostProps) {
 
         <hr />
 
+        <section className={styles.navigationLinks}>
+          <Link href="/">
+            <a>
+              <h2>Title1</h2>
+              <label>Post anterior</label>
+            </a>
+          </Link>
+
+          <Link href="/">
+            <a>
+              <h2>Title2</h2>
+              <label>Próximo post</label>
+            </a>
+          </Link>
+        </section>
+
         <section
           ref={(elem) => {
             if (!elem) {
@@ -165,8 +181,6 @@ export const getStaticProps: GetStaticProps = async ({
   const response = await prismic.getByUID("posts", String(slug), {
     ref: previewData?.ref ?? null,
   });
-
-  console.log("PREVIEW", preview);
 
   return {
     props: {

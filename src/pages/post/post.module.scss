@@ -48,6 +48,19 @@
 
   }
 
+  section.navigationLinks {
+    margin: 4rem 0 4rem 0;
+    display: flex;
+    justify-content: space-between;
+
+    label {
+      color: var(--pink);
+    }
+
+    a:last-child {
+      text-align: right;
+    }
+  }
 
   hr {
     opacity: 0.1;
