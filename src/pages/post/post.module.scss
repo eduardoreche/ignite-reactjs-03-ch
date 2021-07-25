@@ -34,7 +34,23 @@
     font-weight: 400;
     font-size: 1.125rem;
     line-height: 1.5rem;
-    margin: 1rem 0 1rem 0;
-    color: var(--grey-100)
+    margin: 3rem 0 3rem 0;
+    color: var(--grey-100);
+
+  }
+
+  hr {
+    opacity: 0.1;
+    border: 1px solid var(--grey-100);
+  }
+
+  div.utterances {
+    width: 100%;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .utterances-frame {
+    width: 100%;
   }
 }

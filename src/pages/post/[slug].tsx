@@ -85,6 +85,28 @@ export default function Post({ post }: PostProps) {
             <div>{content.body.map((body) => body.text)}</div>
           </article>
         ))}
+
+        <hr />
+
+        <section
+          ref={(elem) => {
+            if (!elem) {
+              return;
+            }
+            const scriptElem = document.createElement("script");
+            scriptElem.src = "https://utteranc.es/client.js";
+            scriptElem.async = true;
+            scriptElem.crossOrigin = "anonymous";
+            scriptElem.setAttribute(
+              "repo",
+              "eduardoreche/ignite-reactjs-03-ch"
+            );
+            scriptElem.setAttribute("issue-term", "pathname");
+            scriptElem.setAttribute("label", "comments");
+            scriptElem.setAttribute("theme", "github-dark");
+            elem.appendChild(scriptElem);
+          }}
+        />
       </main>
     </>
   );
